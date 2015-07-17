@@ -8,25 +8,43 @@ namespace Task1.Library
 {
     public sealed class Polynomial
     {
-        public double Variable { get; set; }
-        private double[] coefficients;
+        private double[] _coefficients;
 
-
-        public double[] Coefficients 
+        public double[] Coefficients
         {
-            get { return this.coefficients; }
-            set 
+            get { return _coefficients; }
+            set
             {
-                if (value.Length != 0 && value[value.Length - 1] != 0)
-                    this.coefficients = value;
+                if (value.Length != 0 && value[0] != 0)
+                    _coefficients = value;
             }
         }
 
-        public int Power 
+        public int Power
         {
-            get { return coefficients.Length; }
+            get { return _coefficients.Length -1; }
         }
 
-        
+        public Polynomial(params double[] coefficients)
+        {
+            Coefficients = coefficients;
+        }
+
+        public Polynomial()
+            : this(1){ }
+
+        public double GetValue(double variable)
+        {
+            return SumOfMebers(variable);
+        }
+
+        private double SumOfMebers(double variable)
+        {
+            double sum = _coefficients[Power];
+            for (int i = 0; i < Power; i++)
+                sum += _coefficients[i] * Math.Pow(variable, Power - i);
+            return sum;
+        }
+           
     }
 }
