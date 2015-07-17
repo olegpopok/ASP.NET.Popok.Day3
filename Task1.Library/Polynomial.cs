@@ -18,7 +18,7 @@ namespace Task1.Library
             get { return _coefficients; }
             set
             {
-                if (value.Length != 0 && value[0] != 0)
+                if (value.Length != 0 )
                     _coefficients = value;
             }
         }
@@ -39,7 +39,7 @@ namespace Task1.Library
         }
 
         public Polynomial()
-            : this(1){ }
+            : this(0){ }
 
         public double GetValue(double variable)
         {
@@ -60,11 +60,13 @@ namespace Task1.Library
 
         public static Polynomial operator +( Polynomial a, Polynomial b)
         {
-            return PolynomOperation(a, b, (x, y) => x+y);
+            return PolynomOperation(a, b, (x, y) => x + y);
         }
 
         public static Polynomial operator -(Polynomial a, Polynomial b)
         {
+            if (a.count < b.count)
+                a = a + new Polynomial(new double[b.count]);
             return PolynomOperation(a, b, (x, y) => x - y);
         }
 
@@ -84,7 +86,7 @@ namespace Task1.Library
             return sum;
         }
 
-        private static void SwapIfFirstParamMoThenLast(Polynomial a, Polynomial b)
+        private static void SwapIfFirstParamMoThenLast(ref Polynomial a, ref Polynomial b)
         {
             if (a.count < b.count)
             {
@@ -96,12 +98,12 @@ namespace Task1.Library
 
         private static Polynomial PolynomOperation(Polynomial a, Polynomial b, Operation operation) 
         {
-            SwapIfFirstParamMoThenLast(a, b);
+            SwapIfFirstParamMoThenLast(ref a, ref b);
 
             Polynomial sum = (Polynomial)a.Clone();
-            for (int i = 0; i < b.count; i++)
-                sum.Coefficients[a.count - b.count + i] = 
-                    operation(sum.Coefficients[a.count - b.count + i], b.Coefficients[i]);
+            for (int i = 0; i < (a.count > b.count ? b.count : a.count); i++)
+                sum.Coefficients[i] = 
+                    operation(sum.Coefficients[i], b.Coefficients[i]);
             return sum;
         }
 
