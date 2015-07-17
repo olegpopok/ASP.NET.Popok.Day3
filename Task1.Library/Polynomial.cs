@@ -70,12 +70,41 @@ namespace Task1.Library
             return PolynomOperation(a, b, (x, y) => x - y);
         }
 
+        public static Polynomial operator *(Polynomial a, Polynomial b)
+        {
+            Polynomial result = new Polynomial(0);
+
+            for (int i = 0; i < b.count; i++)
+            {
+                double[] members = new double[a.count + i];
+                for (int j = 0; j < a.count; j++)
+                    members[j + i] = b._coefficients[i] * a._coefficients[j];
+                result = result + new Polynomial(members); 
+            }
+            return result;
+        }
+
         public override bool Equals(object obj)
         {
             Polynomial polynom = obj as Polynomial;
             if (polynom != null)
                 return PolynomialEquals(polynom);
             return base.Equals(obj);
+        }
+
+        public override string ToString()
+        {
+            string result = _coefficients[0].ToString() + " ";
+            for(int i = 1; i < count; i++)
+            {
+                result += _coefficients[i].ToString()+"x^"+(i+1).ToString();
+            }
+            return result;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.ToString().GetHashCode();
         }
 
         private double SumOfMebers(double variable)

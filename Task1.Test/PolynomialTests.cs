@@ -84,9 +84,19 @@ namespace Task1.Tests
         {
             Polynomial a = new Polynomial(1, 2, 3);
             Polynomial b = new Polynomial(4, 5, 6, 8);
-            Polynomial sum = a - b;
+            Polynomial remainde = a - b;
 
-            Assert.AreEqual(true, sum.Equals(new Polynomial(-3, -3, -3, -8)));
+            Assert.AreEqual(true, remainde.Equals(new Polynomial(-3, -3, -3, -8)));
+        }
+
+        [TestMethod]
+        public void OperatoMul_123Mul12_1476Returned()
+        {
+            Polynomial a = new Polynomial(1, 2, 3);
+            Polynomial b = new Polynomial(1, 2);
+            Polynomial product = a * b;
+
+            Assert.AreEqual(true, product.Equals(new Polynomial(1,4 , 7, 6)));
         }
     }
 }
