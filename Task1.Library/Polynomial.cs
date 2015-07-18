@@ -133,8 +133,8 @@ namespace Task1.Library
 
             Polynomial sum = (Polynomial)a.Clone();
             for (int i = 0; i < (a.count > b.count ? b.count : a.count); i++)
-                sum.Coefficients[i] = 
-                    operation(sum.Coefficients[i], b.Coefficients[i]);
+                sum._coefficients[i] = 
+                    operation(sum._coefficients[i], b._coefficients[i]);
             return sum;
         }
 
