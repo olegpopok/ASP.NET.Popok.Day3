@@ -98,5 +98,15 @@ namespace Task1.Tests
 
             Assert.AreEqual(true, product.Equals(new Polynomial(1,4 , 7, 6)));
         }
+
+        [TestMethod]
+        public void Incap()
+        {
+            Polynomial p = new Polynomial(1, 2, 3);
+            double[] array = p.Coefficients;
+            array[0] = 4;
+            double[] arraytwo = p.Coefficients;
+            Assert.AreEqual(false, array.Equals(arraytwo));
+        }
     }
 }

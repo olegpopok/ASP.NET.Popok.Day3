@@ -15,7 +15,9 @@ namespace Task1.Library
 
         public double[] Coefficients
         {
-            get { return _coefficients; }
+            get { 
+                return (double[])_coefficients.Clone(); 
+                }
             set
             {
                 if (value.Length != 0 )
