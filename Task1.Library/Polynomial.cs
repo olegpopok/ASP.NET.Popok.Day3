@@ -9,39 +9,37 @@ namespace Task1.Library
 {
     delegate double Operation(double a, double b);
 
-    public sealed class Polynomial : ICloneable, IEnumerable
+    public sealed class Polynomial : ICloneable, IEnumerable, IEquatable<Polynomial>
     {
-        private double[] _coefficients;
+        private double[] coefficients;
+        private int count
+        {
+            get { return coefficients.Length; }
+        }
+
+        public Polynomial(params double[] coefficients)
+        {
+            this.Coefficients = coefficients;
+        }
+
+        public Polynomial(): this(0) { }
 
         public double[] Coefficients
         {
             get { 
-                return (double[])_coefficients.Clone(); 
+                return (double[])this.coefficients.Clone(); 
                 }
             set
             {
-                if (value.Length != 0 )
-                    _coefficients = value;
+                if (value.Length != 0)
+                    this.coefficients = value;
             }
         }
 
         public int Power
         {
-            get { return _coefficients.Length -1; }
+            get { return this.coefficients.Length -1; }
         }
-
-        private int count
-        {
-            get { return _coefficients.Length; }
-        }
-
-        public Polynomial(params double[] coefficients)
-        {
-            Coefficients = coefficients;
-        }
-
-        public Polynomial()
-            : this(0){ }
 
         public double GetValue(double variable)
         {
@@ -50,56 +48,83 @@ namespace Task1.Library
 
         public object Clone()
         {
-            double[] coefficientsClone = new double[count];
-            _coefficients.CopyTo(coefficientsClone, 0);
-            return new Polynomial(coefficientsClone);
+            return new Polynomial((double[])this.coefficients.Clone());
         }
 
         public IEnumerator GetEnumerator()
         {
-            return _coefficients.GetEnumerator();
+            return coefficients.GetEnumerator();
         }
 
-        public static Polynomial operator +( Polynomial a, Polynomial b)
+        public bool Equals(Polynomial polynom)
         {
-            return PolynomOperation(a, b, (x, y) => x + y);
+            if (polynom == null)
+                return false;
+            return this.coefficients.SequenceEqual(polynom.coefficients);
         }
 
-        public static Polynomial operator -(Polynomial a, Polynomial b)
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (this == obj)
+                return true;
+            Polynomial polynom = obj as Polynomial;
+            if (polynom != null)
+                return Equals(polynom);
+            else
+                return false;
+        }
+
+        public static bool operator == (Polynomial a, Polynomial b)
+        {
+            if ((object)a == null || (object)b == null)
+                return Object.Equals(a, b);
+            else
+                return a.Equals(b);
+        }
+
+        public static bool operator != (Polynomial a, Polynomial b)
+        {
+            if (a == null || b == null)
+                return Object.Equals(a,b);
+            else
+                return !a.Equals(b);
+        }
+
+        public static Polynomial operator + ( Polynomial a, Polynomial b)
+        {
+            if(a.count < b.count)
+                Swap(ref a, ref b);
+            return ArithmeticOperation(a, b, (x, y) => x + y);
+        }
+
+        public static Polynomial operator - (Polynomial a, Polynomial b)
         {
             if (a.count < b.count)
                 a = a + new Polynomial(new double[b.count]);
-            return PolynomOperation(a, b, (x, y) => x - y);
+            return ArithmeticOperation(a, b, (x, y) => x - y);
         }
 
-        public static Polynomial operator *(Polynomial a, Polynomial b)
+        public static Polynomial operator * (Polynomial a, Polynomial b)
         {
-            Polynomial result = new Polynomial(0);
-
+            Polynomial result = new Polynomial();
             for (int i = 0; i < b.count; i++)
             {
                 double[] members = new double[a.count + i];
                 for (int j = 0; j < a.count; j++)
-                    members[j + i] = b._coefficients[i] * a._coefficients[j];
+                    members[j + i] = b.coefficients[i] * a.coefficients[j];
                 result = result + new Polynomial(members); 
             }
             return result;
         }
 
-        public override bool Equals(object obj)
-        {
-            Polynomial polynom = obj as Polynomial;
-            if (polynom != null)
-                return PolynomialEquals(polynom);
-            return base.Equals(obj);
-        }
-
         public override string ToString()
         {
-            string result = _coefficients[0].ToString() + " ";
-            for(int i = 1; i < count; i++)
+            string result = String.Empty;
+            for(int i = 0; i < count; i++)
             {
-                result += _coefficients[i].ToString()+"x^"+(i+1).ToString();
+                result += String.Format("{0} ", coefficients[i]);
             }
             return result;
         }
@@ -111,44 +136,28 @@ namespace Task1.Library
 
         private double SumOfMebers(double variable)
         {
-            double sum = _coefficients[Power];
-            for (int i = 0; i < Power; i++)
-                sum += _coefficients[i] * Math.Pow(variable, Power - i);
+            double sum = new double();
+            for (int i = 0; i < count; i++)
+            {
+                sum += coefficients[i] * Math.Pow(variable, i);
+            }
             return sum;
         }
 
-        private static void SwapIfFirstParamMoThenLast(ref Polynomial a, ref Polynomial b)
+        private static void Swap(ref Polynomial a, ref Polynomial b)
         {
-            if (a.count < b.count)
-            {
                 Polynomial temp = a;
                 a = b;
                 b = temp;
-            }
         }
 
-        private static Polynomial PolynomOperation(Polynomial a, Polynomial b, Operation operation) 
+        private static Polynomial ArithmeticOperation(Polynomial a, Polynomial b, Operation operation) 
         {
-            SwapIfFirstParamMoThenLast(ref a, ref b);
-
-            Polynomial sum = (Polynomial)a.Clone();
+            Polynomial result = (Polynomial)a.Clone();
             for (int i = 0; i < (a.count > b.count ? b.count : a.count); i++)
-                sum._coefficients[i] = 
-                    operation(sum._coefficients[i], b._coefficients[i]);
-            return sum;
-        }
-
-        private bool PolynomialEquals( Polynomial p)
-        {
-            if (this.count == p.count)
-            {
-                for (int i = 0; i < this.count; i++)
-                    if (this._coefficients[i] != p._coefficients[i])
-                        return false;
-                return true;
-            }
-
-            return false;
+                result.coefficients[i] = 
+                    operation(result.coefficients[i], b.coefficients[i]);
+            return result;
         }
     }
 }

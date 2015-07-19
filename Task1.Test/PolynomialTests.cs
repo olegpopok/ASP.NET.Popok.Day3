@@ -7,13 +7,23 @@ namespace Task1.Tests
     [TestClass]
     public class PolynomialTests
     {
+        #region GetValueTests
         [TestMethod]
-        public void GetValue_PolynomialOneTwoThreeCountVariableOne_SixReturned()
+        public void GetValue_Polynomial123AtVariable1_SixReturned()
         {
             Polynomial polynom = new Polynomial(1, 2, 3);
             Assert.AreEqual(6, polynom.GetValue(1));
         }
 
+        [TestMethod]
+        public void GetValue_Polynomial123AtVariable2_SixReturned()
+        {
+            Polynomial polynom = new Polynomial(1, 2, 3);
+            Assert.AreEqual(17, polynom.GetValue(2));
+        }
+        #endregion
+
+        #region CloneTests
         [TestMethod]
         public void Clone_PolynomialReferenceEqualsCloneOfPolynomial_FalseReturned()
         {
@@ -22,7 +32,7 @@ namespace Task1.Tests
        
             Assert.AreEqual(false, ReferenceEquals(polynom, cloneOfPolynom));
         }
-
+        
         [TestMethod]
         public void Clone_PolynomialEqualsCloneOfPolynomial_TrueReturned()
         {
@@ -31,27 +41,26 @@ namespace Task1.Tests
 
             polynom.Equals(cloneOfPolinom);
         }
+        #endregion
+
+        #region EqualsTests
+        [TestMethod]
+        public void Equals_Reflexive_TrueReturned()
+        {
+            Polynomial x = new Polynomial(1, 2, 3);
+            Assert.AreEqual(true, x.Equals(x));
+        }   
 
         [TestMethod]
-        public void Equals_OneTwoThreeEqualsOneTwoThree_TrueReturned()
+        public void Equals_Symmetric_TrueReturned()
         {
-            Polynomial a = new Polynomial(1, 2, 3);
-            Polynomial b = new Polynomial(1, 2, 3);
-
-            Assert.AreEqual(true, a.Equals(b));
+            Polynomial x = new Polynomial(1, 2, 3);
+            Polynomial y = new Polynomial(1, 2);
+            Assert.AreEqual(x.Equals(y), y.Equals(x));
         }
 
         [TestMethod]
-        public void Equals_OneTwoThreeEqualsOneTwo_FalseReturned()
-        {
-            Polynomial a = new Polynomial(1, 2, 3);
-            Polynomial b = new Polynomial(1, 2);
-
-            Assert.AreEqual(false, a.Equals(b));
-        }
-
-        [TestMethod]
-        public void Equals_OneTwoThreeEqualsOneThwoFour_FalseReturned()
+        public void Equals_123Equals124_FalseReturned()
         {
             Polynomial a = new Polynomial(1, 2, 3);
             Polynomial b = new Polynomial(1, 2, 4);
@@ -59,6 +68,17 @@ namespace Task1.Tests
             Assert.AreEqual(false, a.Equals(b));
         }
 
+        [TestMethod]
+        public void Equals_123Equals123_TrueReturned()
+        {
+            Polynomial a = new Polynomial(1, 2, 3);
+            Polynomial b = new Polynomial(1, 2, 3);
+
+            Assert.AreEqual(true, a.Equals(b));
+        }
+        #endregion
+
+        #region Operator+Tests
         [TestMethod]
         public void OperatoPlus_123Plus456_579Returned()
         {
@@ -78,7 +98,9 @@ namespace Task1.Tests
 
             Assert.AreEqual(true, sum.Equals(new Polynomial(5, 7, 9, 7)));
         }
+        #endregion
 
+        #region Operator-Tests
         [TestMethod]
         public void OperatoMinus_123Minus4568_m3m3m3m8Returned()
         {
@@ -88,7 +110,9 @@ namespace Task1.Tests
 
             Assert.AreEqual(true, remainde.Equals(new Polynomial(-3, -3, -3, -8)));
         }
+        #endregion
 
+        #region Operator*Tests
         [TestMethod]
         public void OperatoMul_123Mul12_1476Returned()
         {
@@ -98,15 +122,6 @@ namespace Task1.Tests
 
             Assert.AreEqual(true, product.Equals(new Polynomial(1,4 , 7, 6)));
         }
-
-        [TestMethod]
-        public void Incap()
-        {
-            Polynomial p = new Polynomial(1, 2, 3);
-            double[] array = p.Coefficients;
-            array[0] = 4;
-            double[] arraytwo = p.Coefficients;
-            Assert.AreEqual(false, array.Equals(arraytwo));
-        }
+        #endregion
     }
 }
