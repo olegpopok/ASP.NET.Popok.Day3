@@ -9,7 +9,7 @@ namespace Task1.Library
 {
     public sealed class Polynomial : ICloneable, IEquatable<Polynomial>
     {
-        private const double epsilon = 00000000.1;
+        private readonly double epsilon = 00000000.1;
         private readonly int degre;
         private readonly int count;
         private double[] coefficients;
@@ -107,7 +107,8 @@ namespace Task1.Library
 
             for (int i = 0; i < count; i++)
             {
-                if (Math.Abs(this.coefficients[i] -polynom.coefficients[i]) > epsilon)
+                double sub = Math.Abs(this.coefficients[i] - polynom.coefficients[i]);
+                if ( sub > epsilon)
                 {
                     return false;
                 }
@@ -189,7 +190,7 @@ namespace Task1.Library
                     sumGhc += (uint)coefficients[index].GetHashCode();                  
                 }
 
-                return (int)(sumGhc % (uint)count); 
+                return (int)(sumGhc % (uint)2971215073); 
             }
         }
 
