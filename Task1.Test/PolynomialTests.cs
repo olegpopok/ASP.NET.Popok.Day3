@@ -11,7 +11,7 @@ namespace Task1.Tests
         [TestMethod]
         public void GetValue_Polynomial123AtVariable1_SixReturned()
         {
-            Polynomial polynom = new Polynomial(1, 2, 3);
+            Polynomial polynom = new Polynomial(1,2,3);
             Assert.AreEqual(6, polynom.GetValue(1));
         }
 
@@ -71,10 +71,10 @@ namespace Task1.Tests
         [TestMethod]
         public void Equals_123Equals123_TrueReturned()
         {
-            Polynomial a = new Polynomial(1, 2, 3);
-            Polynomial b = new Polynomial(1, 2, 3);
+            Polynomial a = null;
+            Polynomial b = null;
 
-            Assert.AreEqual(true, a.Equals(b));
+            Assert.AreEqual(true, a == b);
         }
         #endregion
 
@@ -114,14 +114,30 @@ namespace Task1.Tests
 
         #region Operator*Tests
         [TestMethod]
-        public void OperatoMul_123Mul12_1476Returned()
+        public void OperatoMul_123Mul2_246Returned()
         {
             Polynomial a = new Polynomial(1, 2, 3);
-            Polynomial b = new Polynomial(1, 2);
-            Polynomial product = a * b;
+            double b = 2;
+            Polynomial product = b * a;
 
-            Assert.AreEqual(true, product.Equals(new Polynomial(1,4 , 7, 6)));
+            Assert.AreEqual(true, product.Equals(new Polynomial(2,4,6)));
         }
         #endregion
+
+        #region ToStringTests
+        [TestMethod]
+        public void ToString_Polynom123ToString_1Spase2Spase3SpaseReturned()
+        {
+            Polynomial polynom = new Polynomial(1, 2, 3);
+            Assert.AreEqual("1 2 3 ", polynom.ToString());
+        }
+        #endregion
+
+        public void GetHashCode_GhcEqualGhc_TrueReturned()
+        {
+            Polynomial a = new Polynomial(1, 2, 3, 4);
+            Polynomial b = new Polynomial(1, 2, 3, 4);
+            Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+        }
     }
 }
