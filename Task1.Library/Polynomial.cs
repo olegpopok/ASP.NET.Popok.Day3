@@ -9,23 +9,29 @@ namespace Task1.Library
 {
     public sealed class Polynomial : ICloneable, IEquatable<Polynomial>
     {
-        private readonly double epsilon = 00000000.1;
+        private static readonly double epsilon = 0.000000001;
         private readonly int degre;
-        private readonly int count;
         private double[] coefficients;
-        
-
+       
         public Polynomial():this(new double[1])
         {
+            
         }
 
         public Polynomial(params double[] coefficients)
         {
-            SetCoefficientsHelper(coefficients);
-            this.degre = coefficients.Length - 1;
-            this.count = coefficients.Length;
-        }
 
+            if ((coefficients == null) || (coefficients.Length == 0))
+            {
+                throw new ArgumentException("coefficients");
+            }
+            else
+            {
+                this.coefficients = (double[])coefficients.Clone();
+            }
+
+            this.degre = coefficients.Length - 1;
+        }
 
         public int Degre
         {
@@ -54,7 +60,7 @@ namespace Task1.Library
         {      
             double sum = coefficients[0];
 
-            for (int i = 1; i < count; i++)
+            for (int i = 1; i < this.coefficients.Length; i++)
             {
                 sum += coefficients[i] * Math.Pow(variable, i);
             }
@@ -100,12 +106,12 @@ namespace Task1.Library
                 return true;
             }
 
-            if (this.count != polynom.count)
+            if (this.Degre!= polynom.Degre)
             {
                 return false;
             }
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < coefficients.Length; i++)
             {
                 double sub = Math.Abs(this.coefficients[i] - polynom.coefficients[i]);
                 if ( sub > epsilon)
@@ -150,7 +156,7 @@ namespace Task1.Library
 
         public static Polynomial operator *(double lhs, Polynomial rhs)
         {
-            double[] coefficients = new double[rhs.count];
+            double[] coefficients = new double[rhs.coefficients.Length];
 
             for (int i = 0; i < coefficients.Length; i++)
             {
@@ -173,7 +179,7 @@ namespace Task1.Library
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
-            for (int index = 0; index < count; index++)
+            for (int index = 0; index < this.coefficients.Length; index++)
             {
                 result.AppendFormat("{0} ", coefficients[index]);
             }
@@ -185,7 +191,7 @@ namespace Task1.Library
             unchecked
             {
                 uint sumGhc = 0;
-                for (int index = 0; index < count; index++)
+                for (int index = 0; index < coefficients.Length; index++)
                 {
                     sumGhc += (uint)coefficients[index].GetHashCode();                  
                 }
@@ -196,29 +202,18 @@ namespace Task1.Library
 
         private delegate double OperationEventHandler(double a, double b);
 
-        private void SetCoefficientsHelper(double[] value)
-        {
-            if ( (value == null) || (value.Length == 0) )
-            {
-                throw new ArgumentException("coefficients");
-            }
-            else
-            {
-                this.coefficients = (double[])value.Clone();
-            }
-        }
-
         private static Polynomial AddOrSubOperationHelper(Polynomial lhs, Polynomial rhs, OperationEventHandler operation) 
         {
-            double[] coefficients = new double[ (lhs.count > rhs.count) ? lhs.count : rhs.count];
+            double[] coefficients = new double[ (lhs.coefficients.Length > rhs.coefficients.Length) ?
+                lhs.coefficients.Length : rhs.coefficients.Length];
 
             for (int index = 0; index < coefficients.Length; index++)
             {
-                if (index < lhs.count)
+                if (index < lhs.coefficients.Length)
                 {
                     coefficients[index] = lhs.coefficients[index];
                 }
-                if (index < rhs.count)
+                if (index < rhs.coefficients.Length)
                 {
                     coefficients[index] = operation(coefficients[index], rhs.coefficients[index]);
                 }
