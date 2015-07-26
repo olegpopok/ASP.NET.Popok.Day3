@@ -200,9 +200,7 @@ namespace Task1.Library
             }
         }
 
-        private delegate double OperationEventHandler(double a, double b);
-
-        private static Polynomial AddOrSubOperationHelper(Polynomial lhs, Polynomial rhs, OperationEventHandler operation) 
+        private static Polynomial AddOrSubOperationHelper(Polynomial lhs, Polynomial rhs, Func<double, double, double> operation) 
         {
             double[] coefficients = new double[ (lhs.coefficients.Length > rhs.coefficients.Length) ?
                 lhs.coefficients.Length : rhs.coefficients.Length];
